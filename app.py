@@ -4,6 +4,7 @@ import base64
 import streamlit as st
 import class_parser
 import interface_parser
+import sys
 
 from IPython.display import Image, display
 import matplotlib.pyplot as plt
@@ -15,9 +16,9 @@ def convert_to_mermaid(java_code):
       return interface_parser.interface_convert_to_mermaid(java_code)
     else:
       return class_parser.class_convert_to_mermaid(java_code)
-    
+
 # read from folder
-folder = "/home/prometheus/Documents/code/ods/dih-report-api"
+folder = sys.argv[1] if len(sys.argv) > 1 else "java_codes"
 # read from that folder
 import os
 java_codes = []

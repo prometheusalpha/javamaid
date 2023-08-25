@@ -15,7 +15,7 @@ pip install -r requirements.txt
 Navigate to the project directory in your terminal and run:
 
 ```
-streamlit run app.py
+streamlit run app.py /path/to/your/java/project
 ```
 
 This will launch the app in your browser. The default URL is [http://localhost:8501 ↗](http://localhost:8501)
