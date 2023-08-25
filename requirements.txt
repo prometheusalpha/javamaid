@@ -1,2 +1,4 @@
 javalang
 streamlit
+IPython
+matplotlib
