@@ -1,13 +1,13 @@
 # Javamaid
 
-This is a basic template for building Streamlit apps in Python. It provides instructions on how to run and use the app.
+A small tool to quickly draw Mermaid diagrams of your Java code.
 
 ## Getting Started
 
 To run the app, make sure you have libraries installed in your Python environment using pip:
 
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 ## Running the App
