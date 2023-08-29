@@ -1,4 +1,5 @@
 import javalang
+import streamlit as st
 
 def class_convert_to_mermaid(java_code):
     tree = javalang.parse.parse(java_code)
@@ -7,15 +8,26 @@ def class_convert_to_mermaid(java_code):
     for path, node in tree.filter(javalang.tree.ClassDeclaration):
         class_name = node.name
         extends_clause = node.extends.name if node.extends else ""
-        implements_clause = ""
+        implements_clause = []
         if node.implements:
-          implements_clause = ", ".join([imp.name for imp in node.implements])
+          implements_clause = [imp.name for imp in node.implements]
+
+        # Generate all the imports from the same java folder
+        imports = path[0].imports
+        package = path[0].package.name
+        for imp in imports:
+          import_package = imp.path.split(".")[0]
+          import_name = imp.path.split(".")[-1]
+          if package.split(".")[0] == import_package and not import_name in implements_clause and not import_name == extends_clause:
+            # add relationship between the class and the imported class
+            class_diagram += f"    {class_name} --> {imp.path.split('.')[-1]}\n"
+
 
         # Generate the extends and implements clauses
         if extends_clause:
-            class_diagram += f"    {class_name} <|-- {extends_clause}\n"
+            class_diagram += f"    {class_name} --|> {extends_clause}\n"
         if implements_clause:
-            implements_list = [f"{class_name} <|.. {imp}" for imp in implements_clause.split(",")]
+            implements_list = [f"{class_name} ..|> {imp}" for imp in implements_clause]
             class_diagram += "    " + "\n    ".join(implements_list) + "\n"
 
         # Generate the class header

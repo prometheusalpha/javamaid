@@ -2,3 +2,4 @@ javalang
 streamlit
 IPython
 matplotlib
+pyperclip
