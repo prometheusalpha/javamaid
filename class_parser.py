@@ -2,6 +2,11 @@ import javalang
 
 
 def class_convert_to_mermaid(java_code, selected):
+    if java_code.find("record") != -1:
+        java_code = change_record_to_class(java_code)
+        print(java_code)
+
+    print(java_code)
     tree = javalang.parse.parse(java_code)
     class_diagram = ""
 
@@ -81,3 +86,11 @@ def class_convert_to_mermaid(java_code, selected):
         class_diagram += "}\n\n"
 
     return class_diagram
+
+def change_record_to_class(javacode):
+  javacode = javacode.replace("record", "class")
+  javacode = javacode.replace(",", ";")
+  javacode = javacode.replace(")", ";")
+  javacode = javacode.replace("{", "")
+  javacode = javacode.replace("(", "{")
+  return javacode
