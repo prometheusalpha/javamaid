@@ -6,7 +6,6 @@ def class_convert_to_mermaid(java_code, selected):
         java_code = change_record_to_class(java_code)
         print(java_code)
 
-    print(java_code)
     tree = javalang.parse.parse(java_code)
     class_diagram = ""
 

@@ -45,7 +45,6 @@ def convert_to_mermaid(java_code, selected):
 def get_type(java_code):
     if java_code.find("record") != -1:
         java_code = class_parser.change_record_to_class(java_code)
-        print(">>>>>>>>>>>>>>>>?????????????" + java_code)
     tree = javalang.parse.parse(java_code)
     return tree.types[0].__class__.__name__
 
