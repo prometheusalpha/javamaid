@@ -1,6 +1,6 @@
 import javalang
 
-def interface_convert_to_mermaid(java_code):
+def interface_convert_to_mermaid(java_code, selected):
     tree = javalang.parse.parse(java_code)
     class_diagram = ""
 

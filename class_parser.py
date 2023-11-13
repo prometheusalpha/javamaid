@@ -1,33 +1,49 @@
 import javalang
-import streamlit as st
 
-def class_convert_to_mermaid(java_code):
+
+def class_convert_to_mermaid(java_code, selected):
     tree = javalang.parse.parse(java_code)
     class_diagram = ""
+
+    selected_names = []
+    for c in selected:
+        selected_names.append(c["name"].split("/")[-1].split(".")[0])
 
     for path, node in tree.filter(javalang.tree.ClassDeclaration):
         class_name = node.name
         extends_clause = node.extends.name if node.extends else ""
         implements_clause = []
         if node.implements:
-          implements_clause = [imp.name for imp in node.implements]
+            implements_clause = [imp.name for imp in node.implements]
 
         # Generate all the imports from the same java folder
         imports = path[0].imports
         package = path[0].package.name
         for imp in imports:
-          import_package = imp.path.split(".")[0]
-          import_name = imp.path.split(".")[-1]
-          if package.split(".")[0] == import_package and not import_name in implements_clause and not import_name == extends_clause:
-            # add relationship between the class and the imported class
-            class_diagram += f"    {class_name} --> {imp.path.split('.')[-1]}\n"
+            import_package = imp.path.split(".")[0]
+            import_name = imp.path.split(".")[-1]
+            if (
+                package.split(".")[0] == import_package
+                and not import_name in implements_clause
+                and not import_name == extends_clause
+            ):
+                # add relationship between the class and the imported class
+                # only add if the class is selected
+                for c in selected_names:
+                    if c == import_name:
+                        class_diagram += f"    {class_name} --> {import_name}\n"
 
+                    # class_diagram += f"    {class_name} --> {imp.path.split('.')[-1]}\n"
 
         # Generate the extends and implements clauses
-        if extends_clause:
+
+        if extends_clause and selected_names.count(extends_clause) > 0:
             class_diagram += f"    {class_name} --|> {extends_clause}\n"
         if implements_clause:
-            implements_list = [f"{class_name} ..|> {imp}" for imp in implements_clause]
+            selected_imps = [
+                imp for imp in implements_clause if selected_names.count(imp) > 0
+            ]
+            implements_list = [f"{class_name} ..|> {imp}" for imp in selected_imps]
             class_diagram += "    " + "\n    ".join(implements_list) + "\n"
 
         # Generate the class header
@@ -50,7 +66,9 @@ def class_convert_to_mermaid(java_code):
         for method in node.methods:
             method_name = method.name
             return_type = method.return_type.name if method.return_type else "void"
-            parameters = ", ".join([f"{param.type.name} {param.name}" for param in method.parameters])
+            parameters = ", ".join(
+                [f"{param.type.name} {param.name}" for param in method.parameters]
+            )
             visibility = list(method.modifiers)[0] if method.modifiers else "public"
             if visibility == "private":
                 method_name = f"- {method_name}"
