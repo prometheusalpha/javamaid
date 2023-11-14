@@ -1,5 +1,5 @@
 import javalang
-
+import re
 
 def class_convert_to_mermaid(java_code, selected):
     if java_code.find("record") != -1:

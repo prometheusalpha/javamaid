@@ -21,11 +21,11 @@ def get_selected_classes(folder):
     return java_codes
 
 
-def parse(java_codes):
-    mermaid_diagram = "classDiagram\n  direction LR\n"
+def parse(java_codes, dir):
+    mermaid_diagram = "classDiagram\n  direction " + dir + "\n"
     for java_module in java_codes:
         mermaid_diagram += convert_to_mermaid(
-            java_module["code"].replace('"""', '"').replace("\n", ""), java_codes
+            java_module["code"].replace('"""', '"'), java_codes
         )
     return mermaid_diagram
 
@@ -56,14 +56,20 @@ def convert_to_mermaid_based_on_type(type, java_code, selected):
         return class_parser.class_convert_to_mermaid(java_code, selected)
 
 
+if st.checkbox("Vertical"):
+    dir = "TB"
+else:
+    dir = "LR"
+
 folder = sys.argv[1] if len(sys.argv) > 1 else ""
 java_codes = get_selected_classes(folder)
-mermaid_diagram = parse(java_codes)
+mermaid_diagram = parse(java_codes, dir)
 base64_string = encode(mermaid_diagram)
 
 # button to copy the mermaid diagram to clipboard
 if st.button("Copy mermaid code to clipboard", type="primary"):
     pyperclip.copy(mermaid_diagram)
+
 
 image = Image(url="https://mermaid.ink/img/" + base64_string)
 st.write(image)
